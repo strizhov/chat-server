@@ -1,7 +1,7 @@
 
 DESCRIPTION
 
-Mychat is a generic TCP server chat.
+chat-server is a generic TCP server chat.
 
 FEATURES
 
@@ -70,7 +70,7 @@ DISCUSSION
 
 1. The server chat uses Golang bufio's ReadString() method that reads until the first occurrence of delim in the input. This limits server to process only single line messages.
 2. The HTTP REST server does not provide any authentication (or any security layer) and any Internet user can post or receive message any time. 
-3. If a user calls GET on HTTP REST server, the server reads default /tmp/server.log log file and sends back ALL messages posted previously. This can be potentically dangerous if the chat log is not rotated often or contains sensitive information.
+3. If a user calls GET on HTTP REST server, the server reads default /tmp/server.log log file and sends back ALL messages posted previously. This can be dangerous if the chat log is not rotated often or contains sensitive information.
 
 TODO
 
