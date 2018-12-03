@@ -1,0 +1,81 @@
+
+DESCRIPTION
+
+Mychat is a generic TCP server chat.
+
+FEATURES
+
+1. Logs all events (user messages, connection information, etc.) in a single configurable log file.
+2. Supports HTTP REST API for posting messages. 
+3. Supports HTTP REST API for reading all messages.
+
+BUILDING & RUNNING
+
+# unzip mychat.zip
+# cd mychat
+# go build .
+# ./mychat  
+
+A user can run 'telnet localhost 6000' to start a client, after client connected successfully, 
+server will send authentication prompt to client, and wait for client to input a nickname, this nickname is then used as communication id.
+If a user does not provide (=empty) nickname, the server will close connection.
+
+Each user registered by the server receives messages in the 'Timestamp Nickname: Message' format.
+
+CONFIGURATION
+
+The server chat looks up for 'conf.json' file that includes configuration parameters. The default parameters are following:
+
+{
+	"addr":":6000",
+	"restaddr":":8000",
+	"logfile":"/tmp/server.log"
+}
+
+-- 'addr' is the parameter for IP address & port value for the server chat. For instance, ':6000' will listen for any IP available on port 6000. 
+-- 'restaddr' is the parameter for IP address & port value for the HTTP REST server. For instance, '127.0.0.1:8000' will listen '127.0.0.1' address on port 8000.
+-- 'logfile' is the location of the server log.
+
+If you wish to load your own configuration file, use '-c' argument option to the server application, e.g.:
+
+# ./mychat -c somefile.json
+
+HTTP REST API USAGE
+
+The chat server supports posting and receiving messages via REST API.
+
+1. Posting a message to the chat. 
+
+If a user wants to post a message to everyone in the chat, she can run curl with JSON formatted input message to the chat server running on '1.2.3.4' port 8000:
+
+# curl --header "Content-Type: application/json" --request POST --data '{"from":"user","content":"hello, this is REST user"}' http://1.2.3.4:8000/
+
+The REST API accepts JSON-formatted message:
+{
+	"from":"user"
+	"content":"hello this is REST user"
+}
+-- 'from' is the nickname for REST user.
+-- 'content' is the any message user wants to send to everyone.
+
+2. Receiving all messages from the chat. 
+
+If a user wants to read all messages posted earlier, she can curl server running on '1.2.3.4' port 8000
+
+# curl --request GET http://1.2.3.4:8000/
+
+This will output messages previously posted by all users.
+
+DISCUSSION
+
+1. The server chat uses Golang bufio's ReadString() method that reads until the first occurrence of delim in the input. This limits server to process only single line messages.
+2. The HTTP REST server does not provide any authentication (or any security layer) and any Internet user can post or receive message any time. 
+3. If a user calls GET on HTTP REST server, the server reads default /tmp/server.log log file and sends back ALL messages posted previously. This can be potentically dangerous if the chat log is not rotated often or contains sensitive information.
+
+TODO
+
+1. testing.T would be good to have.
+
+AUTHORS
+
+Mikhail Strizhov (mikhailstrizhov@gmail.com)

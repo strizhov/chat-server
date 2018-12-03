@@ -1,0 +1,5 @@
+{
+	"addr":":6000",
+	"restaddr":":8000",
+	"logfile":"/tmp/server.log"
+}
